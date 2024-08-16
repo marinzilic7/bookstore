@@ -36,7 +36,7 @@
 
 <script setup></script>
 
-<style>
+<style scoped>
 .container-fluid {
   background-image: url("../images/background.jpg");
   height: 100vh;
