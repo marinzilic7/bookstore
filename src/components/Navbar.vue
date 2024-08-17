@@ -3,6 +3,7 @@
     <nav class="navbar navbar-expand-lg bg-body-tertiary border-bottom">
       <div class="container-fluid">
         <a class="navbar-brand" href="#">BookStore</a>
+      
         <button
           class="navbar-toggler"
           type="button"
@@ -41,6 +42,7 @@
                 aria-expanded="false"
               >
                 {{ user.name }}
+                
               </button>
               <ul class="dropdown-menu">
                 <li>
@@ -48,7 +50,7 @@
                     >Logout</a
                   >
                 </li>
-                <li><a class="dropdown-item" href="#">Another action</a></li>
+                <li v-if="user.role === 'admin'"><a class="dropdown-item" href="#">Administration</a></li>
                 <li>
                   <a class="dropdown-item" href="#">Something else here</a>
                 </li>
@@ -93,6 +95,7 @@ export default {
         });
 
         this.user = response.data;
+        console.log(this.user);
       } catch (error) {
         console.error(
           "Greška prilikom dohvaćanja korisničkih podataka:",
@@ -107,7 +110,7 @@ export default {
     },
   },
 
-  mounted() {
+  created() {
     this.fetchUserData();
   },
 };

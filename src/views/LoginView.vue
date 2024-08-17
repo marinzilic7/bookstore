@@ -11,6 +11,7 @@
             class="form-control"
             id="email"
             v-model="email"
+            required
             aria-describedby="emailHelp"
           />
         </div>
@@ -21,6 +22,7 @@
             class="form-control"
             id="password"
             v-model="password"
+            required
           />
         </div>
 
@@ -29,7 +31,12 @@
           You don't have an account?
           <span><a class="color-text" href="/register">Register</a></span>
         </p>
-        <p v-if="message" :class="{ 'alert-success': !fail, 'alert-danger': fail }" class="text-center mt-3">{{ message }}</p>
+        <p class="color-text text-center"><span><a class="color-text" href="/">Guest</a></span></p>
+       
+        <p v-if="fail" class="text-danger text-center">
+          {{ message }}
+        </p>
+       
       </form>
     </div>
   </div>
