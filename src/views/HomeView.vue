@@ -8,6 +8,8 @@ import Futer from "@/components/Futer.vue";
     <Navbar />
   </div>
   <div class="container">
+    
+    
     <div class="d-flex align-items-center justify-content-evenly mt-5">
       <div class="mb-5">
         <h1 class="heading">
@@ -72,7 +74,9 @@ import Futer from "@/components/Futer.vue";
       </div>
     </div>
   </div>
-  <div class="middle-section mt-5 d-flex align-items-center justify-content-center">
+  <div
+    class="middle-section mt-5 d-flex align-items-center justify-content-center"
+  >
     <div>
       <div class="container">
         <div class="d-flex justify-content-center gap-5 align-items-center">
@@ -96,45 +100,60 @@ import Futer from "@/components/Futer.vue";
   </div>
   <div class="container">
     <div class="text-center mt-5">
-      <h4 class="desc-text fw-bold">The New York Times Best Sellers </h4>
-      <h5>The NYT best selling fiction and nonfiction books -  August 18, 2024</h5>
+      <h4 class="desc-text fw-bold">The New York Times Best Sellers</h4>
+      <h5>
+        The NYT best selling fiction and nonfiction books - August 18, 2024
+      </h5>
     </div>
-    <hr>
+    <hr />
     <div class="book-items d-flex justify-content-evenly mt-5">
       <div>
-        <img src="../images/women.png" alt="slika"  height="240px">
+        <img src="../images/women.png" alt="slika" height="240px" />
         <p class="desc-text mt-3">The Women</p>
-        <p class="text-muted">Kristin Hannah Julia <br> Whelan (2024)</p>
+        <p class="text-muted">
+          Kristin Hannah Julia <br />
+          Whelan (2024)
+        </p>
       </div>
       <div>
-        <img src="../images/roses.png" alt="slika"  height="240px">
-        <p class="desc-text mt-3">A Court of Thorns and <br> Roses</p>
+        <img src="../images/roses.png" alt="slika" height="240px" />
+        <p class="desc-text mt-3">
+          A Court of Thorns and <br />
+          Roses
+        </p>
         <p class="text-muted">Sarah J.Maas (2015)</p>
       </div>
       <div>
-        <img src="../images/summer.png" alt="slika"  height="240px">
+        <img src="../images/summer.png" alt="slika" height="240px" />
         <p class="desc-text mt-3">Just for the Summer</p>
-        <p class="text-muted">Abby Jimenez <br> Christine Lakin (2024)</p>
+        <p class="text-muted">
+          Abby Jimenez <br />
+          Christine Lakin (2024)
+        </p>
       </div>
       <div>
-        <img src="../images/elegy.png" alt="slika"  height="240px">
+        <img src="../images/elegy.png" alt="slika" height="240px" />
         <p class="desc-text mt-3">Hillbilly Elegy</p>
-        <p class="text-muted"> J.D.Vance (2016)</p>
+        <p class="text-muted">J.D.Vance (2016)</p>
       </div>
       <div>
-        <img src="../images/fourth.png" alt="slika"  height="240px">
+        <img src="../images/fourth.png" alt="slika" height="240px" />
         <p class="desc-text mt-3">Fourth Wing</p>
-        <p class="text-muted"> Rebecca Yarros (2023)</p>
+        <p class="text-muted">Rebecca Yarros (2023)</p>
       </div>
       <div>
-        <img src="../images/ends.png" alt="slika" height="240px">
+        <img src="../images/ends.png" alt="slika" height="240px" />
         <p class="desc-text mt-3">It Ends With Us</p>
-        <p class="text-muted"> Colleen Hoover (2016)</p>
+        <p class="text-muted">Colleen Hoover (2016)</p>
       </div>
     </div>
   </div>
-  <Futer/>
+  <Futer />
 </template>
+
+<script>
+
+</script>
 
 <style scoped>
 .libby-button {
@@ -146,7 +165,7 @@ import Futer from "@/components/Futer.vue";
   font-size: 48px;
 }
 
-.heading-2{
+.heading-2 {
   font-size: 43px;
 }
 
@@ -164,23 +183,23 @@ import Futer from "@/components/Futer.vue";
   height: 500px;
 }
 
-.image-books img{
+.image-books img {
   transition: transform 0.5s;
 }
 
-.image-books img:hover{
+.image-books img:hover {
   transform: scale(1.1);
 }
 
-.book-items{
-  margin-bottom:  100px !important;
+.book-items {
+  margin-bottom: 100px !important;
 }
-.book-items img{
+.book-items img {
   transition: transform 0.5s;
   cursor: pointer;
 }
 
-.book-items img:hover{
+.book-items img:hover {
   transform: scale(1.1);
 }
 </style>

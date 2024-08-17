@@ -1,40 +1,84 @@
 <template>
   <div class="container-fluid">
     <div class="d-flex justify-content-center align-items-center vh-100">
-      <form class="col-12 col-lg-4 col-md-5 col-sm-5 bg-light shadow-lg p-3">
+      <form class="col-12 col-lg-4 col-md-5 col-sm-5 bg-light shadow-lg p-3" @submit.prevent="loginUser">
         <h2 class="text-center">Login</h2>
 
         <div class="mb-3">
-          <label for="exampleInputEmail1" class="form-label"
-            >Email address</label
-          >
+          <label for="email" class="form-label">Email address</label>
           <input
             type="email"
             class="form-control"
-            id="exampleInputEmail1"
+            id="email"
+            v-model="email"
             aria-describedby="emailHelp"
           />
         </div>
         <div class="mb-3">
-          <label for="exampleInputPassword1" class="form-label">Password</label>
+          <label for="password" class="form-label">Password</label>
           <input
             type="password"
             class="form-control"
-            id="exampleInputPassword1"
+            id="password"
+            v-model="password"
           />
         </div>
 
         <button type="submit" class="button btn btn-primary w-100">Login</button>
         <p class="text-center mt-3">
-          You dont have an account?
+          You don't have an account?
           <span><a class="color-text" href="/register">Register</a></span>
         </p>
+        <p v-if="message" :class="{ 'alert-success': !fail, 'alert-danger': fail }" class="text-center mt-3">{{ message }}</p>
       </form>
     </div>
   </div>
 </template>
 
-<script setup></script>
+<script>
+import axios from "axios";
+
+export default {
+  data() {
+    return {
+      email: "",
+      password: "",
+      message: "",
+      alert: false,
+      fail: false,
+    };
+  },
+  methods: {
+    async loginUser() {
+      try {
+        const response = await axios.post(
+          "http://localhost:3000/api/login",
+          {
+            email: this.email,
+            password: this.password,
+          }
+        );
+
+        localStorage.setItem('token', response.data.token);
+
+        this.message = response.data.message;
+        this.alert = true;
+        setTimeout(() => {
+          this.alert = false;
+        }, 3000);
+        this.$router.push("/");
+      } catch (error) {
+        this.message = error.response?.data?.message || 'Greška prilikom prijave';
+        this.fail = true;
+        setTimeout(() => {
+          this.fail = false;
+        }, 3000);
+        console.error("Greška prilikom prijave:", error);
+      }
+    },
+  },
+};
+</script>
 
 <style scoped>
 .container-fluid {
@@ -42,16 +86,24 @@
   height: 100vh;
 }
 
-.button{
-    background-color: #006693;
-    border:none;
+.button {
+  background-color: #006693;
+  border: none;
 }
 
-.button:hover{
-    background-color: #00587a;
+.button:hover {
+  background-color: #00587a;
 }
 
-.color-text{
-    color: #006693;
+.color-text {
+  color: #006693;
+}
+
+.alert-success {
+  color: green;
+}
+
+.alert-danger {
+  color: red;
 }
 </style>

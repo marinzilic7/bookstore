@@ -3,7 +3,8 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 
-
+// Importiraj korisničke rute
+import userRoutes from './routes/User.js';
 
 // Inicijaliziraj dotenv
 dotenv.config();
@@ -22,33 +23,10 @@ mongoose.connect(mongoUri, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log('Povezan s MongoDB-om'))
   .catch(error => console.error('Greška prilikom povezivanja s MongoDB-om:', error));
 
-
-  const korisnikSchema = new mongoose.Schema({
-    name: String,
-    surname: String
-});
-
-// Kreiraj model
-const Korisnik = mongoose.model('users', korisnikSchema);
-
-
-
-// API endpoint za dohvaćanje korisnika
-app.get('/api/users', async (req, res) => {
-    try {
-        const korisnici = await Korisnik.find();
-        console.log('Dohvaćeni korisnici:', korisnici);
-        res.json(korisnici);
-    } catch (error) {
-        console.error('Greška prilikom dohvaćanja korisnika:', error);
-        res.status(500).json({ message: error.message });
-    }
-});
-
-
+// Koristi korisničke rute
+app.use('/api', userRoutes);
 
 // Pokreni server
 app.listen(port, () => {
   console.log(`Server pokrenut na http://localhost:${port}`);
 });
-
