@@ -179,7 +179,7 @@ import Navbar from "@/components/Navbar.vue";
               <div class="input-group input-group-sm mb-3">
                 <span class="input-group-text" id="basic-addon1">Year</span>
                 <input
-                  type="text"
+                  type="number"
                   class="form-control"
                   placeholder="The year of the book"
                   aria-label="Username"
@@ -407,7 +407,7 @@ import Navbar from "@/components/Navbar.vue";
                 </thead>
                 <tbody>
                   <tr v-if="books.length === 0">
-                    <td colspan="7" class="text-center fs-4 mt-3 mb-3">
+                    <td colspan="13" class="text-center fs-4 mt-3 mb-3">
                       There are currently no books.
                     </td>
                   </tr>
@@ -430,7 +430,7 @@ import Navbar from "@/components/Navbar.vue";
                     <td class="text-center text-muted">
                       {{ book.description }}
                     </td>
-                    <td class="text-center text-muted">{{ book.price }}</td>
+                    <td class="text-center text-muted">{{ book.price }} €</td>
                     <td class="text-center text-muted">
                       {{ book.category.name }}
                     </td>
@@ -531,6 +531,120 @@ import Navbar from "@/components/Navbar.vue";
         </div>
       </div>
     </div>
+
+    <!-- MODAL FOR EDITING BOOK -->
+
+    <div
+      class="modal fade"
+      id="editBookModal"
+      tabindex="-1"
+      aria-labelledby="editBookModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="editBookModalLabel">Edit Book</h1>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form @submit.prevent="updateBook">
+              <div class="mb-3">
+                <label for="editBookTitle" class="form-label">Title</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="editBookTitle"
+                  v-model="editBookTitle"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label for="editBookAuthor" class="form-label">Author</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="editBookAuthor"
+                  v-model="editBookAuthor"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label for="editBookYear" class="form-label">Year</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  id="editBookYear"
+                  v-model="editBookYear"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label for="editBookDescription" class="form-label"
+                  >Description</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="editBookDescription"
+                  v-model="editBookDescription"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label for="editBookPrice" class="form-label">Price</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  id="editBookPrice"
+                  v-model="editBookPrice"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label for="editBookCategory" class="form-label"
+                  >Category</label
+                >
+                <select
+                  class="form-control"
+                  id="editBookCategory"
+                  v-model="editBookCategory"
+                  required
+                >
+                  <option value="" disabled selected>Select category...</option>
+                  <option
+                    v-for="category in categories"
+                    :key="category._id"
+                    :value="category._id"
+                  >
+                    {{ category.name }}
+                  </option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label for="editBookImage" class="form-label">Book Image</label>
+                <input
+                  type="file"
+                  class="form-control"
+                  id="editBookImage"
+                  @change="handleFileUpload"
+                />
+              </div>
+              <div class="d-flex justify-content-end">
+                <button type="submit" class="btn btn-primary">
+                  Save changes
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -557,6 +671,14 @@ export default {
       selectedCategory: "",
       imageFile: null,
       books: [],
+      editBookId: null,
+      editBookTitle: "",
+      editBookAuthor: "",
+      editBookYear: "",
+      editBookDescription: "",
+      editBookPrice: "",
+      editBookCategory: "",
+      editBookImage: null,
     };
   },
   methods: {
@@ -724,6 +846,59 @@ export default {
       );
       modal.show();
     },
+    async openEditBookModal(book) {
+      this.editBookId = book._id;
+      this.editBookTitle = book.title;
+      this.editBookAuthor = book.author;
+      this.editBookYear = book.year;
+      this.editBookDescription = book.description;
+      this.editBookPrice = book.price;
+      this.editBookCategory = book.category._id; // Adjust if necessary
+      const modal = new bootstrap.Modal(
+        document.getElementById("editBookModal")
+      );
+      modal.show();
+    },
+    async updateBook() {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          console.error("Nema tokena, korisnik nije prijavljen");
+          return;
+        }
+
+        const formData = new FormData();
+        formData.append("title", this.editBookTitle);
+        formData.append("author", this.editBookAuthor);
+        formData.append("year", this.editBookYear);
+        formData.append("description", this.editBookDescription);
+        formData.append("price", this.editBookPrice);
+        formData.append("category", this.editBookCategory);
+        if (this.imageFile) {
+          formData.append("image", this.imageFile);
+        }
+
+        const response = await axios.put(
+          `http://localhost:3000/api/books/${this.editBookId}`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        console.log("Book updated:", response.data);
+        this.fetchBooks();
+        const modal = bootstrap.Modal.getInstance(
+          document.getElementById("editBookModal")
+        );
+        modal.hide();
+      } catch (error) {
+        console.error("Error updating book:", error.response || error.message);
+      }
+    },
     async updateCategory() {
       try {
         const token = localStorage.getItem("token");
@@ -811,10 +986,17 @@ export default {
         console.log("Book added:", response.data);
         this.success = true;
         this.message = response.data.message;
+        this.fetchBooks();
         setTimeout(() => {
           this.success = false;
         }, 3000);
-        // Osvježi listu knjiga ili druge potrebne radnje
+        this.bookTitle = "";
+        this.author = "";
+        this.year = "";
+        this.description = "";
+        this.price = "";
+        this.selectedCategory = "";
+        this.imageFile = null;
       } catch (error) {
         this.success = true;
         this.message = error.response.data.message;
@@ -843,6 +1025,40 @@ export default {
         console.log("Ovo su sve knjige:", this.books);
       } catch (error) {
         console.error("Greška prilikom dohvaćanja knjiga:", error);
+      }
+    },
+    async deleteBook(id) {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          console.error("Nema tokena, korisnik nije prijavljen");
+          return;
+        }
+
+        const confirmDelete = confirm(
+          "Are you sure you want to delete this book?"
+        );
+        if (!confirmDelete) return;
+
+        const response = await axios.delete(
+          `http://localhost:3000/api/books/${id}`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+
+        // Provjeri odgovor
+        console.log("Response from server:", response);
+
+        // Ažuriraj listu knjiga nakon brisanja
+        this.books = this.books.filter((book) => book._id !== id);
+        console.log("Knjiga uspješno obrisana:", id);
+        this.fetchBooks();
+      } catch (error) {
+        console.error(
+          "Greška prilikom brisanja knjige:",
+          error.response || error.message
+        );
       }
     },
   },

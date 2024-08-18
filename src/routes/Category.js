@@ -43,7 +43,7 @@ router.delete("/categories/:id", async (req, res) => {
     if (!category) {
       return res.status(404).json({ message: "Kategorija nije pronađen" });
     }
-    res.status(200).json({ message: "Kategorija uspješno obrisan" });
+    res.status(200).json({ message: "Category successfully deleted" });
   } catch (error) {
     res
       .status(500)

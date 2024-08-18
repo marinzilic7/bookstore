@@ -59,4 +59,52 @@ router.get("/books", async (req, res) => {
   }
 });
 
+router.delete("/books/:id", async (req, res) => {
+  try {
+    const books = await Book.findByIdAndDelete(req.params.id);
+    if (!books) {
+      return res.status(404).json({ message: "Kategorija nije pronađen" });
+    }
+    res.status(200).json({ message: "Book successfully deleted" });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Greška prilikom brisanja korisnika", error });
+  }
+});
+
+router.put("/books/:id", upload.single("image"), async (req, res) => {
+  try {
+    const { title, author, year, description, price, category } = req.body;
+    const image = req.file ? req.file.filename : null;
+
+    // Ažuriraj knjigu u bazi podataka
+    const updatedBook = await Book.findByIdAndUpdate(
+      req.params.id,
+      {
+        title,
+        author,
+        year,
+        description,
+        price,
+        category,
+        image: image ? image : undefined, // Ako nije priložena nova slika, ne ažuriraj image polje
+        updatedAt: Date.now(),
+      },
+      { new: true } // Vraća ažurirani dokument
+    );
+
+    if (!updatedBook) {
+      return res.status(404).json({ message: "Knjiga nije pronađena" });
+    }
+
+    res
+      .status(200)
+      .json({ message: "Knjiga uspješno ažurirana", book: updatedBook });
+  } catch (error) {
+    console.error("Greška pri ažuriranju knjige:", error);
+    res.status(500).json({ message: "Greška pri ažuriranju knjige", error });
+  }
+});
+
 export default router;
