@@ -6,6 +6,7 @@ import dotenv from 'dotenv';
 // Importiraj korisničke rute
 import userRoutes from './routes/User.js';
 import categoryRoutes from './routes/Category.js';
+import bookRoutes from './routes/Book.js';
 
 // Inicijaliziraj dotenv
 dotenv.config();
@@ -27,6 +28,7 @@ mongoose.connect(mongoUri, { useNewUrlParser: true, useUnifiedTopology: true })
 // Koristi korisničke rute
 app.use('/api', userRoutes);
 app.use('/api', categoryRoutes);
+app.use('/api', bookRoutes);
 // Pokreni server
 app.listen(port, () => {
   console.log(`Server pokrenut na http://localhost:${port}`);

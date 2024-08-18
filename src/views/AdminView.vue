@@ -150,12 +150,114 @@ import Navbar from "@/components/Navbar.vue";
           data-bs-parent="#accordionFlushExample"
         >
           <div class="accordion-body">
-            Placeholder content for this accordion, which is intended to
-            demonstrate the <code>.accordion-flush</code> class. This is the
-            third item's accordion body. Nothing more exciting happening here in
-            terms of content, but just filling up the space to make it look, at
-            least at first glance, a bit more representative of how this would
-            look in a real-world application.
+            <h5 class="text-center mt-3">Add new book</h5>
+            <form @submit.prevent="addBook()">
+              <div class="input-group input-group-sm mb-3">
+                <span class="input-group-text" id="basic-addon1">Title</span>
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Enter the title of the book..."
+                  aria-label="Username"
+                  aria-describedby="basic-addon1"
+                  required
+                  v-model="bookTitle"
+                />
+              </div>
+              <div class="input-group input-group-sm mb-3">
+                <span class="input-group-text" id="basic-addon1">Author</span>
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Enter the author's name..."
+                  aria-label="Username"
+                  aria-describedby="basic-addon1"
+                  required
+                  v-model="author"
+                />
+              </div>
+              <div class="input-group input-group-sm mb-3">
+                <span class="input-group-text" id="basic-addon1">Year</span>
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="The year of the book"
+                  aria-label="Username"
+                  aria-describedby="basic-addon1"
+                  required
+                  v-model="year"
+                />
+              </div>
+              <div class="input-group input-group-sm mb-3">
+                <span class="input-group-text" id="basic-addon1"
+                  >Description</span
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Enter the description of the book..."
+                  aria-label="Username"
+                  aria-describedby="basic-addon1"
+                  required
+                  v-model="description"
+                />
+              </div>
+              <div class="input-group input-group-sm mb-3">
+                <span class="input-group-text" id="basic-addon1">Price</span>
+                <input
+                  type="number"
+                  class="form-control"
+                  placeholder="Enter the price of the book..."
+                  aria-label="Username"
+                  aria-describedby="basic-addon1"
+                  required
+                  v-model="price"
+                />
+              </div>
+              <div class="input-group input-group-sm mb-3">
+                <span class="input-group-text" id="basic-addon1">Category</span>
+                <select
+                  class="form-control"
+                  aria-label="Category"
+                  v-model="selectedCategory"
+                  required
+                >
+                  <option value="" disabled selected>Select category...</option>
+                  <option
+                    v-for="category in categories"
+                    :key="category._id"
+                    :value="category._id"
+                  >
+                    {{ category.name }}
+                  </option>
+                </select>
+              </div>
+              <div class="input-group input-group-sm mb-3">
+                <span class="input-group-text" id="basic-addon1"
+                  >Book Image</span
+                >
+                <input
+                  type="file"
+                  class="form-control"
+                  aria-label="Book Image"
+                  aria-describedby="basic-addon1"
+                  @change="handleFileUpload"
+                />
+              </div>
+              <div class="d-flex justify-content-end gap-3">
+                <button type="submit" class="button btn text-light btn-sm">
+                  Add Book
+                </button>
+                <button
+                  class="button btn text-light btn-sm"
+                  data-bs-toggle="modal"
+                  data-bs-target="#bookModal"
+                  data-bs-whatever="@mdo"
+                >
+                  See all books
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       </div>
@@ -197,7 +299,13 @@ import Navbar from "@/components/Navbar.vue";
                   </tr>
                 </thead>
                 <tbody>
+                  <tr v-if="categories.length === 0">
+                    <td colspan="7" class="text-center fs-4 mt-3 mb-3">
+                      There are currently no categories.
+                    </td>
+                  </tr>
                   <tr
+                    v-else
                     class="table-items"
                     v-for="category in categories"
                     :key="category._id"
@@ -206,7 +314,7 @@ import Navbar from "@/components/Navbar.vue";
                       {{ category._id }}
                     </th>
                     <td class="text-center text-muted">{{ category.name }}</td>
-                    <td class="text-center text-muted" >
+                    <td class="text-center text-muted">
                       {{ category.createdBy.name }}
                       {{ category.createdBy.surname }}
                     </td>
@@ -226,13 +334,15 @@ import Navbar from "@/components/Navbar.vue";
                     <td class="text-center">
                       <i
                         class="deleteUserIcon bi bi-file-earmark-x text-danger fs-5"
-                        title="Delete user"
+                        title="Delete category"
+                        @click="deleteCategory(category._id)"
                       ></i>
                     </td>
                     <td class="text-center">
                       <i
                         class="deleteUserIcon bi bi-pencil-square text-primary fs-5"
                         title="Edit category"
+                        @click="openEditCategoryModal(category)"
                       ></i>
                     </td>
                   </tr>
@@ -248,6 +358,175 @@ import Navbar from "@/components/Navbar.vue";
             >
               Close
             </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Table for books - modal  -->
+
+    <div
+      class="modal fade"
+      id="bookModal"
+      tabindex="-1"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-fullscreen">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalLabel">
+              All books in database
+            </h1>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <div class="table-responsive">
+              <table class="table table-sm table-bordered table-hover">
+                <thead>
+                  <tr class="table-items">
+                    <th class="text-center" scope="col">ID</th>
+                    <th class="text-center" scope="col">Title</th>
+                    <th class="text-center" scope="col">Added by</th>
+                    <th class="text-center" scope="col">Author</th>
+                    <th class="text-center" scope="col">Year</th>
+                    <th class="text-center" scope="col">Description</th>
+                    <th class="text-center" scope="col">Price</th>
+                    <th class="text-center" scope="col">Category</th>
+                    <th class="text-center" scope="col">Image</th>
+                    <th class="text-center" scope="col">Date</th>
+                    <th class="text-center" scope="col">Update Date</th>
+                    <th class="text-center" scope="col">Delete</th>
+                    <th class="text-center" scope="col">Edit</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-if="books.length === 0">
+                    <td colspan="7" class="text-center fs-4 mt-3 mb-3">
+                      There are currently no books.
+                    </td>
+                  </tr>
+                  <tr
+                    v-else
+                    class="table-items"
+                    v-for="book in books"
+                    :key="book._id"
+                  >
+                    <th class="text-center text-muted" scope="row">
+                      {{ book._id }}
+                    </th>
+                    <td class="text-center text-muted">{{ book.title }}</td>
+                    <td class="text-center text-muted">
+                      {{ book.addedBy.name }}
+                      {{ book.addedBy.surname }}
+                    </td>
+                    <td class="text-center text-muted">{{ book.author }}</td>
+                    <td class="text-center text-muted">{{ book.year }}</td>
+                    <td class="text-center text-muted">
+                      {{ book.description }}
+                    </td>
+                    <td class="text-center text-muted">{{ book.price }}</td>
+                    <td class="text-center text-muted">
+                      {{ book.category.name }}
+                    </td>
+                    <td class="text-center text-muted">
+                      <img
+                        :src="'./src/uploads/' + book.image"
+                        alt="Book image"
+                        class="img-fluid"
+                        height="30px"
+                        width="30px"
+                      />
+                    </td>
+                    <td class="text-center text-muted">
+                      {{ formatDate(book.createdAt) }}
+                    </td>
+                    <td
+                      v-if="book.updatedAt === book.createdAt"
+                      class="text-center text-muted"
+                    >
+                      Not updated yet
+                    </td>
+                    <td v-else class="text-center text-muted">
+                      {{ formatDate(book.updatedAt) }}
+                    </td>
+                    <td class="text-center">
+                      <i
+                        class="deleteUserIcon bi bi-file-earmark-x text-danger fs-5"
+                        title="Delete book"
+                        @click="deleteBook(book._id)"
+                      ></i>
+                    </td>
+                    <td class="text-center">
+                      <i
+                        class="deleteUserIcon bi bi-pencil-square text-primary fs-5"
+                        title="Edit book"
+                        @click="openEditBookModal(book)"
+                      ></i>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="modal fade"
+      id="editCategoryModal"
+      tabindex="-1"
+      aria-labelledby="editCategoryModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="editCategoryModalLabel">
+              Edit Category
+            </h1>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form @submit.prevent="updateCategory">
+              <div class="mb-3">
+                <label for="categoryName" class="form-label"
+                  >Category Name</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="categoryName"
+                  v-model="editCategoryName"
+                  required
+                />
+              </div>
+              <div class="d-flex justify-content-end">
+                <button type="submit" class="btn btn-primary">
+                  Save changes
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       </div>
@@ -268,6 +547,16 @@ export default {
       message: "",
       success: false,
       categories: [],
+      editCategoryId: null,
+      editCategoryName: "",
+      bookTitle: "",
+      year: "",
+      description: "",
+      price: "",
+      author: "",
+      selectedCategory: "",
+      imageFile: null,
+      books: [],
     };
   },
   methods: {
@@ -315,7 +604,7 @@ export default {
         }
 
         const confirmDelete = confirm(
-          "Jeste li sigurni da želite obrisati ovog korisnika?"
+          "Are you sure you want to delete this user?"
         );
         if (!confirmDelete) return;
 
@@ -364,7 +653,7 @@ export default {
         setTimeout(() => {
           this.success = false;
         }, 3000);
-        // Clear input field
+        this.fetchCategories();
         this.newCategoryName = "";
       } catch (error) {
         this.success = true;
@@ -399,11 +688,169 @@ export default {
         console.error("Greška prilikom dohvaćanja kategorija:", error);
       }
     },
+    async deleteCategory(id) {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          console.error("Nema tokena, korisnik nije prijavljen");
+          return;
+        }
+
+        const confirmDelete = confirm(
+          "Are you sure you want to delete this category??"
+        );
+        if (!confirmDelete) return;
+
+        const response = await axios.delete(
+          `http://localhost:3000/api/categories/${id}`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+
+        console.log("Category deleted:", response.data);
+        this.categories = this.categories.filter(
+          (category) => category._id !== id
+        );
+      } catch (error) {
+        console.error("Greška prilikom brisanja kategorije:", error);
+      }
+    },
+    openEditCategoryModal(category) {
+      this.editCategoryId = category._id;
+      this.editCategoryName = category.name;
+      const modal = new bootstrap.Modal(
+        document.getElementById("editCategoryModal")
+      );
+      modal.show();
+    },
+    async updateCategory() {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          console.error("Nema tokena, korisnik nije prijavljen");
+          return;
+        }
+
+        const response = await axios.put(
+          `http://localhost:3000/api/categories/${this.editCategoryId}`,
+          {
+            name: this.editCategoryName,
+          },
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+
+        console.log("Category updated:", response.data);
+        this.success = true;
+        this.message = response.data.message;
+        setTimeout(() => {
+          this.success = false;
+        }, 3000);
+
+        // Ažuriraj lokalnu listu kategorija
+        this.categories = this.categories.map((category) =>
+          category._id === this.editCategoryId
+            ? { ...category, name: this.editCategoryName }
+            : category
+        );
+
+        // Sakrij modal
+        const modal = bootstrap.Modal.getInstance(
+          document.getElementById("editCategoryModal")
+        );
+        modal.hide();
+        this.fetchCategories();
+      } catch (error) {
+        this.success = true;
+        this.message = error.response.data.message;
+        setTimeout(() => {
+          this.success = false;
+        }, 3000);
+        console.error(
+          "Error updating category:",
+          error.response || error.message
+        );
+      }
+    },
+    handleFileUpload(event) {
+      this.imageFile = event.target.files[0];
+    },
+    async addBook() {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          console.error("Nema tokena, korisnik nije prijavljen");
+          return;
+        }
+        console.log("User ID:", this.user._id);
+        const formData = new FormData();
+        formData.append("title", this.bookTitle);
+        formData.append("author", this.author);
+        formData.append("year", this.year);
+        formData.append("description", this.description);
+        formData.append("price", this.price);
+        formData.append("category", this.selectedCategory);
+        formData.append("addedBy", this.user._id);
+        if (this.imageFile) {
+          formData.append("image", this.imageFile);
+        }
+
+        const response = await axios.post(
+          "http://localhost:3000/api/books",
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        console.log("Book added:", response.data);
+        this.success = true;
+        this.message = response.data.message;
+        setTimeout(() => {
+          this.success = false;
+        }, 3000);
+        // Osvježi listu knjiga ili druge potrebne radnje
+      } catch (error) {
+        this.success = true;
+        this.message = error.response.data.message;
+        setTimeout(() => {
+          this.success = false;
+        }, 3000);
+        console.error(
+          "Greška prilikom dodavanja knjige:",
+          error.response || error.message
+        );
+      }
+    },
+    async fetchBooks() {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          console.error("Nema tokena, korisnik nije prijavljen");
+          return;
+        }
+
+        const response = await axios.get("http://localhost:3000/api/books", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        this.books = response.data;
+        console.log("Ovo su sve knjige:", this.books);
+      } catch (error) {
+        console.error("Greška prilikom dohvaćanja knjiga:", error);
+      }
+    },
   },
 
   created() {
     this.fetchUserData();
     this.fetchCategories();
+    this.fetchBooks();
   },
 };
 </script>

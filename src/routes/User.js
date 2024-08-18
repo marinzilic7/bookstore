@@ -40,14 +40,14 @@ router.post("/register", async (req, res) => {
     if (existingUser) {
       return res
         .status(400)
-        .json({ message: "Korisnik s ovim emailom već postoji" });
+        .json({ message: "A user with this email already exists" });
     }
 
     // Jel lozinka duza od 6 karaktera
     if (password.length < 6) {
       return res
         .status(400)
-        .json({ message: "Lozinka mora sadržavati najmanje 6 karaktera" });
+        .json({ message: "Password must contain at least 6 characters" });
     }
 
     // Hashiraj lozinku prije spremanja
@@ -66,7 +66,7 @@ router.post("/register", async (req, res) => {
     // Spremi korisnika u bazu podataka
     await newUser.save();
 
-    res.status(201).json({ message: "Registracija uspješna" });
+    res.status(201).json({ message: "Registraion successfull" });
   } catch (error) {
     console.error("Greška prilikom registracije korisnika:", error);
     res.status(500).json({ message: "Greška na serveru" });
@@ -80,13 +80,17 @@ router.post("/login", async (req, res) => {
     // Provjeri postoji li korisnik s navedenim emailom
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(400).json({ message: "Neispravan email ili lozinka" });
+      return res
+        .status(400)
+        .json({ message: "Invalid email address or password" });
     }
 
     // Provjeri ispravnost lozinke
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res.status(400).json({ message: "Neispravan email ili lozinka" });
+      return res
+        .status(400)
+        .json({ message: "Invalid email address or password" });
     }
 
     // Generiraj JWT token
@@ -94,7 +98,7 @@ router.post("/login", async (req, res) => {
       expiresIn: "1h",
     });
 
-    res.json({ message: "Prijava uspješna", token });
+    res.json({ message: "Login success", token });
   } catch (error) {
     console.error("Greška prilikom prijave korisnika:", error);
     res.status(500).json({ message: "Greška na serveru" });
