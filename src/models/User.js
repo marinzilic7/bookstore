@@ -22,6 +22,10 @@ const userSchema = new mongoose.Schema({
     role:{
         type:String, 
         required:true,
+    },
+    dateRegistered: {
+        type: Date,
+        default: Date.now
     }
 });
 

@@ -50,7 +50,7 @@
                     >Logout</a
                   >
                 </li>
-                <li v-if="user.role === 'admin'"><a class="dropdown-item" href="#">Administration</a></li>
+                <li v-if="user.role === 'admin'"> <RouterLink class="dropdown-item" to="/admin">Administration</RouterLink> </li>
                 <li>
                   <a class="dropdown-item" href="#">Something else here</a>
                 </li>

@@ -79,6 +79,7 @@ export default {
       email: "",
       password: "",
       message: "",
+
       alert: false,
       fail: false,
     };
@@ -93,7 +94,8 @@ export default {
             surname: this.surname,
             email: this.email,
             password: this.password,
-            role:'user', 
+            role: "user",
+            dateRegistered: new Date(),
           }
         );
         this.message = response.data.message;

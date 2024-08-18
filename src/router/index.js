@@ -3,7 +3,7 @@ import HomeView from '../views/HomeView.vue'
 import RegisterView from '../views/RegisterView.vue'
 import LoginView from '../views/LoginView.vue'
 import BooksView from '../views/BooksView.vue'
-
+import AdminView from '../views/AdminView.vue'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -26,6 +26,11 @@ const router = createRouter({
       path: '/books',
       name: 'books',
       component: BooksView
+    },
+    {
+      path: '/admin',
+      name: 'admin',
+      component: AdminView
     },
   ]
 })
