@@ -32,10 +32,10 @@ import Futer from "@/components/Futer.vue";
       <div class="items">
         <div class="card " style="width: 18rem">
           <ul class="list-group list-group-flush ">
-            <li class="list-group-item text-center text-muted">Opis: {{ book.description }}</li>
-            <li class="list-group-item text-center text-muted">Godina: {{ book.year }}</li>
-            <li class="list-group-item text-center text-muted">Kategorija: {{ book.category.name }}</li>
-            <li class="list-group-item text-center text-muted">Cijena: {{ book.price }} €</li>
+            <li class="list-group-item text-center text-muted">Description: {{ book.description }}</li>
+            <li class="list-group-item text-center text-muted">Year: {{ book.year }}</li>
+            <li class="list-group-item text-center text-muted">Category: {{ book.category.name }}</li>
+            <li class="list-group-item text-center text-muted">Price: {{ book.price }} €</li>
           </ul>
         </div>
         <button class="btn btn-success w-100 mt-2">Buy</button>
