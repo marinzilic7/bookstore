@@ -29,6 +29,7 @@ mongoose.connect(mongoUri, { useNewUrlParser: true, useUnifiedTopology: true })
 app.use('/api', userRoutes);
 app.use('/api', categoryRoutes);
 app.use('/api', bookRoutes);
+app.use('/src/uploads', express.static('src/uploads'));
 // Pokreni server
 app.listen(port, () => {
   console.log(`Server pokrenut na http://localhost:${port}`);

@@ -1,31 +1,94 @@
+<script setup>
+import Navbar from "@/components/Navbar.vue";
+import Futer from "@/components/Futer.vue";
+</script>
+
 <template>
-    <div>
-      <h1>Korisnici</h1>
-      <ul>
-        <li v-for="user in users" :key="user._id">
-          {{ user.name }} {{ user.surname }}
-        </li>
-      </ul>
+  <div>
+    <Navbar />
+  </div>
+  <div class="d-flex gap-5 ms-5 mt-5">
+    <div
+      v-for="book in books"
+      :key="book._id"
+      class="card border-0"
+      style="width: 180px"
+    >
+      <RouterLink :to="{ name: 'BookDetails', params: { id: book._id } }">
+        <img
+          :src="'./src/uploads/' + book.image"
+          alt="Book image"
+          class="img-fluid"
+          height="240px"
+          width="180px"
+        />
+      </RouterLink>
+
+      <div class="card-body mt-3">
+        <p class="book-title card-text">
+          {{ book.title }}
+        </p>
+        <p class="book-title text-muted">
+          {{ book.author }}
+        </p>
+      </div>
     </div>
-  </template>
-  
-  <script>
-  import axios from 'axios';
-  
-  export default {
-    data() {
-      return {
-        users: []
-      };
-    },
-    async created() {
+  </div>
+</template>
+
+<script>
+import axios from "axios";
+
+export default {
+  data() {
+    return {
+      books: [],
+      search: "",
+    };
+  },
+  created() {
+    this.fetchBooks();
+  },
+  methods: {
+    async fetchBooks() {
       try {
-        const response = await axios.get('http://localhost:3000/api/users');
-        this.users = response.data;
+        const token = localStorage.getItem("token");
+        if (!token) {
+          console.error("Nema tokena, korisnik nije prijavljen");
+          return;
+        }
+
+        const response = await axios.get("http://localhost:3000/api/books", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        this.books = response.data;
+        console.log("Ovo su sve knjige:", this.books);
       } catch (error) {
-        console.error('Greška prilikom dohvaćanja korisnika:', error);
+        console.error("Greška prilikom dohvaćanja knjiga:", error);
       }
-    }
-  };
-  </script>
-  
+    },
+  },
+};
+</script>
+
+<style scoped>
+.book-title {
+  font-size: 18.08px;
+  line-height: 10px;
+}
+
+.card-body {
+  padding: 0px;
+}
+
+.img-fluid {
+  border-radius: 10px;
+  transition: transform 0.5s;
+  cursor: pointer;
+}
+
+.img-fluid:hover {
+  transform: translateY(-10px);
+}
+</style>

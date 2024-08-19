@@ -107,4 +107,24 @@ router.put("/books/:id", upload.single("image"), async (req, res) => {
   }
 });
 
+router.get("/books/:id", async (req, res) => {
+  try {
+    const book = await Book.findById(req.params.id)
+      .populate("addedBy", "name surname")
+      .populate("category", "name") // Populiraj kategoriju
+      .select(
+        "title author year description price category image addedBy createdAt updatedAt"
+      );
+    if (!book) {
+      return res.status(404).json({ message: "Knjiga nije pronađena" });
+    }
+    res.json(book);
+  } catch (error) {
+    console.error("Detalji greške:", error.message);
+    console.error("Stack trace:", error.stack);
+    res.status(500).json({ message: "Server error" });
+  }
+}
+);
+
 export default router;
