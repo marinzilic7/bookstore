@@ -11,8 +11,11 @@ import Futer from "@/components/Futer.vue";
     <h3 class="text-center mt-4">All books in your cart</h3>
     <div class="mt-3">
       <div class="d-flex flex-column justify-content-center shadow-lg p-5">
-        <!-- Iteriramo kroz svaki item u kosarici -->
+        <h3 class="text-center" v-if="carts.items == 0">
+          Your cart is empty, please add some books
+        </h3>
         <div
+          v-else
           v-for="item in carts.items"
           :key="item._id"
           class="card mt-5 shadow-lg mb-3 col-12"
@@ -43,6 +46,7 @@ import Futer from "@/components/Futer.vue";
                 <div class="d-flex justify-content-end me-3">
                   <i
                     class="delete-cart-icon bi bi-x-circle text-danger fs-4 mt-1"
+                    @click="deleteItem(item.bookId._id)"
                   ></i>
                 </div>
               </div>
@@ -89,6 +93,28 @@ export default {
           (acc, item) => acc + item.bookId.price,
           0
         );
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    async deleteItem(id) {
+      console.log(id);
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          console.error("Nema tokena, korisnik nije prijavljen");
+          return;
+        }
+        const response = await axios.delete(
+          `http://localhost:3000/api/cart/${id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        console.log(response.data);
+        this.fetchCart();
       } catch (error) {
         console.error(error);
       }

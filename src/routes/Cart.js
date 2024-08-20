@@ -83,4 +83,37 @@ router.get("/cart", async (req, res) => {
   }
 });
 
+router.delete("/cart/:id", async (req, res) => {
+  const { id } = req.params; // Ovdje 'id' predstavlja ID knjige (bookId)
+
+  const token = req.headers.authorization.split(" ")[1];
+  if (!token) {
+    return res.status(401).json({ message: "No token provided" });
+  }
+
+  const decoded = jwt.verify(token, "your_jwt_secret_key");
+  const userId = decoded.id;
+
+  try {
+    // Pronađite košaricu korisnika
+    const cart = await Cart.findOne({ userId });
+    if (!cart) {
+      return res.status(404).json({ message: "Cart not found" });
+    }
+
+    // Filtrirajte iteme u košarici kako biste uklonili onaj koji ima odgovarajući bookId
+    cart.items = cart.items.filter((item) => item.bookId.toString() !== id);
+
+    // Spremite ažuriranu košaricu
+    await cart.save();
+
+    res
+      .status(200)
+      .json({ message: "Item successfully removed from cart", cart });
+  } catch (error) {
+    console.error("Error deleting item from cart:", error);
+    res.status(500).json({ message: "Server error", error });
+  }
+});
+
 export default router;
