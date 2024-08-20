@@ -23,6 +23,7 @@
             <li class="nav-item">
               <RouterLink class="nav-link" to="/books">Books</RouterLink>
             </li>
+
             <ul v-if="!user" class="navbar-nav me-auto ms-auto mb-2 mb-lg-0">
               <li class="nav-item">
                 <RouterLink class="nav-link" to="/register"
@@ -59,6 +60,19 @@
                 </li>
               </ul>
             </div>
+          </ul>
+          <ul class="navbar-nav ms-auto me-3 mb-2 mb-lg-0 position-relative">
+            <li class="nav-item ">
+              <RouterLink class="nav-link" to="/cart"
+                ><i class="bi bi-cart fs-4"></i
+              ></RouterLink>
+            </li>
+            <span
+              class="badge-color position-absolute top-0 mt-2 start-100 translate-middle badge rounded-pill bg-primary"
+            >
+              1
+              <span class="visually-hidden">unread messages</span>
+            </span>
           </ul>
           <form class="d-flex" role="search">
             <input
@@ -119,4 +133,10 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+
+.badge-color{
+  background-color:#00587a !important;
+}
+
+</style>

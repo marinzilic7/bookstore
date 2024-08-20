@@ -30,19 +30,29 @@ import Futer from "@/components/Futer.vue";
         width="336px"
       />
       <div class="items">
-        <div class="card " style="width: 18rem">
-          <ul class="list-group list-group-flush ">
-            <li class="list-group-item text-center text-muted">Description: {{ book.description }}</li>
-            <li class="list-group-item text-center text-muted">Year: {{ book.year }}</li>
-            <li class="list-group-item text-center text-muted">Category: {{ book.category.name }}</li>
-            <li class="list-group-item text-center text-muted">Price: {{ book.price }} €</li>
+        <div class="card" style="width: 18rem">
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item text-center text-muted">
+              Description: {{ book.description }}
+            </li>
+            <li class="list-group-item text-center text-muted">
+              Year: {{ book.year }}
+            </li>
+            <li class="list-group-item text-center text-muted">
+              Category: {{ book.category.name }}
+            </li>
+            <li class="list-group-item text-center text-muted">
+              Price: {{ book.price }} €
+            </li>
           </ul>
         </div>
-        <button class="btn btn-success w-100 mt-2">Buy</button>
+        <button class="btn btn-success w-100 mt-2" @click="buyBook(book._id)">
+          Buy
+        </button>
       </div>
     </div>
   </div>
-   <Futer /> 
+  <Futer />
 </template>
 
 <script>
@@ -68,6 +78,26 @@ export default {
         console.log(this.book, "Single knjiga");
       } catch (error) {
         console.error("Greška prilikom dohvaćanja detalja knjige:", error);
+      }
+    },
+    async buyBook(id) {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          console.error("Nema tokena, korisnik nije prijavljen");
+          return;
+        }
+
+        const response = await axios.post(
+          `http://localhost:3000/api/cart/${id}`,
+          {},
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+        console.log(response.data);
+      } catch (error) {
+        console.error("Greška prilikom dodavanja knjige u korpu:", error);
       }
     },
   },
@@ -112,21 +142,7 @@ export default {
   font-size: 16px;
 }
 
-.middle-section{
-    margin-bottom: 300px;
+.middle-section {
+  margin-bottom: 300px;
 }
 </style>
-
-<!-- <div>
-    <h1>{{ book.title }}</h1>
-    <p>{{ book.author }}</p>
-    <p>{{ book.description }}</p>
-    <p>{{ book.image }}</p>
-    <img
-      :src="`http://localhost:3000/src/uploads/${book.image}`"
-      alt="Book image"
-      class="img-fluid"
-      height="240px"
-      width="180px"
-    />
-  </div> -->

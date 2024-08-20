@@ -7,6 +7,7 @@ import dotenv from 'dotenv';
 import userRoutes from './routes/User.js';
 import categoryRoutes from './routes/Category.js';
 import bookRoutes from './routes/Book.js';
+import cartRoutes from './routes/Cart.js'; 
 
 // Inicijaliziraj dotenv
 dotenv.config();
@@ -29,6 +30,7 @@ mongoose.connect(mongoUri, { useNewUrlParser: true, useUnifiedTopology: true })
 app.use('/api', userRoutes);
 app.use('/api', categoryRoutes);
 app.use('/api', bookRoutes);
+app.use('/api', cartRoutes);
 app.use('/src/uploads', express.static('src/uploads'));
 // Pokreni server
 app.listen(port, () => {
