@@ -45,32 +45,30 @@
                 {{ user.name }}
               </button>
               <ul class="dropdown-menu">
-                <li>
-                  <a class="dropdown-item" href="#" @click="logoutUser()"
-                    >Logout</a
-                  >
-                </li>
                 <li v-if="user.role === 'admin'">
                   <RouterLink class="dropdown-item" to="/admin"
                     >Administration</RouterLink
                   >
                 </li>
                 <li>
-                  <a class="dropdown-item" href="#">Something else here</a>
+                  <a class="dropdown-item" href="#" @click="logoutUser()"
+                    >Logout</a
+                  >
                 </li>
               </ul>
             </div>
           </ul>
           <ul class="navbar-nav ms-auto me-3 mb-2 mb-lg-0 position-relative">
-            <li class="nav-item ">
+            <li class="nav-item">
               <RouterLink class="nav-link" to="/cart"
                 ><i class="bi bi-cart fs-4"></i
               ></RouterLink>
             </li>
             <span
+              v-if="carts && carts.items && carts.items.length > 0"
               class="badge-color position-absolute top-0 mt-2 start-100 translate-middle badge rounded-pill bg-primary"
             >
-              1
+              {{ carts.items.length }}
               <span class="visually-hidden">unread messages</span>
             </span>
           </ul>
@@ -96,6 +94,7 @@ export default {
   data() {
     return {
       user: null,
+      carts: [],
     };
   },
   methods: {
@@ -125,18 +124,43 @@ export default {
       this.user = null;
       this.$router.push("/login");
     },
+    async fetchCart() {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          console.error("Nema tokena, korisnik nije prijavljen");
+          return;
+        }
+        const response = await axios.get("http://localhost:3000/api/cart", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        this.carts = response.data;
+
+        this.total = this.carts.items.reduce(
+          (acc, item) => acc + item.bookId.price,
+          0
+        );
+      } catch (error) {
+        console.error(error);
+      }
+    },
   },
 
   created() {
     this.fetchUserData();
+    this.fetchCart();
+    this.$bus.on("cart-updated", this.fetchCart);
+  },
+  beforeUnmount() {
+    this.$bus.off("cart-updated", this.fetchCart);
   },
 };
 </script>
 
 <style>
-
-.badge-color{
-  background-color:#00587a !important;
+.badge-color {
+  background-color: #00587a !important;
 }
-
 </style>

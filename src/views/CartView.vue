@@ -112,7 +112,9 @@ export default {
               Authorization: `Bearer ${token}`,
             },
           }
+          
         );
+        this.$bus.emit('cart-updated');
         console.log(response.data);
         this.fetchCart();
       } catch (error) {

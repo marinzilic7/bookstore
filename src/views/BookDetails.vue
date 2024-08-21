@@ -20,21 +20,19 @@ import Futer from "@/components/Futer.vue";
   </div>
   <div>
     <div
-      class="middle-section d-flex justify-content-center gap-5 position-relative flex-wrap"
+      class="middle-section d-flex justify-content-center gap-5  flex-wrap"
     >
       <img
         :src="`http://localhost:3000/src/uploads/${book.image}`"
         alt="Book image"
-        class="img-fluid"
+        class="img-fluid mt-5"
         height="337px"
         width="336px"
       />
       <div class="items">
-        <div class="card" style="width: 18rem">
+        <div class="card " style="width: 18rem">
           <ul class="list-group list-group-flush">
-            <li class="list-group-item text-center text-muted">
-              Description: {{ book.description }}
-            </li>
+            
             <li class="list-group-item text-center text-muted">
               Year: {{ book.year }}
             </li>
@@ -46,10 +44,12 @@ import Futer from "@/components/Futer.vue";
             </li>
           </ul>
         </div>
-        <button class="btn btn-success w-100 mt-2" @click="buyBook(book._id)">
+        <button class="btn btn-success w-100  btn-sm mt-2" @click="buyBook(book._id)">
           Buy
         </button>
+        <p class="text-desc mt-3">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dicta vero in nulla nostrum tempora recusandae sint praesentium numquam enim magni et, voluptates facere esse nihil rem iste doloremque? Labore facilis harum laudantium rem fugiat eveniet molestiae maiores quae voluptatum cum quibusdam at quisquam tempora corrupti beatae nisi perspiciatis quam tempore perferendis, ea doloremque alias! Laudantium tempora mollitia placeat aspernatur!</p>
       </div>
+      
     </div>
   </div>
   <Futer />
@@ -95,6 +95,7 @@ export default {
             headers: { Authorization: `Bearer ${token}` },
           }
         );
+        this.$bus.emit('cart-updated');
         console.log(response.data);
       } catch (error) {
         console.error("Greška prilikom dodavanja knjige u korpu:", error);
@@ -126,11 +127,7 @@ export default {
   letter-spacing: 5px;
 }
 
-.img-fluid {
-  position: absolute;
-  top: -30%;
-  left: 25%;
-}
+
 
 .items {
   margin-top: 50px;
@@ -144,5 +141,9 @@ export default {
 
 .middle-section {
   margin-bottom: 300px;
+}
+
+.text-desc{
+  width:290px;
 }
 </style>
