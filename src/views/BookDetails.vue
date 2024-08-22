@@ -91,7 +91,8 @@ export default {
       try {
         const token = localStorage.getItem("token");
         if (!token) {
-          console.error("Nema tokena, korisnik nije prijavljen");
+          this.noti	= "You need to be logged in to buy a book";
+          this.success = true;
           return;
         }
 

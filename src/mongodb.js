@@ -8,7 +8,7 @@ import userRoutes from './routes/User.js';
 import categoryRoutes from './routes/Category.js';
 import bookRoutes from './routes/Book.js';
 import cartRoutes from './routes/Cart.js'; 
-
+import orderRoutes from './routes/Order.js';
 // Inicijaliziraj dotenv
 dotenv.config();
 
@@ -31,6 +31,7 @@ app.use('/api', userRoutes);
 app.use('/api', categoryRoutes);
 app.use('/api', bookRoutes);
 app.use('/api', cartRoutes);
+app.use('/api', orderRoutes);
 app.use('/src/uploads', express.static('src/uploads'));
 // Pokreni server
 app.listen(port, () => {

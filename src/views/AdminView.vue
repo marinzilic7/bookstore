@@ -6,9 +6,9 @@ import Navbar from "@/components/Navbar.vue";
   <div>
     <Navbar />
   </div>
-  <div v-if="user.role !== 'admin'">
-    <h1>Forbidden</h1>
-    <p>You don't have permission to access this page.</p>
+  <div class="mt-5" v-if="user.role !== 'admin'">
+    <h1 class="text-center">Forbidden</h1>
+    <p class="text-center">You don't have permission to access this page.</p>
   </div>
   <div v-else class="container">
     <div
@@ -258,6 +258,79 @@ import Navbar from "@/components/Navbar.vue";
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <h2 class="accordion-header">
+          <button
+            class="accordion-button collapsed"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#flush-collapseFour"
+            aria-expanded="false"
+            aria-controls="flush-collapseFour"
+          >
+            See all orders
+          </button>
+        </h2>
+        <div
+          id="flush-collapseFour"
+          class="accordion-collapse collapse"
+          data-bs-parent="#accordionFlushExample"
+        >
+          <div class="accordion-body">
+            <div class="table-responsive">
+              <table class="table table-bordered table-hover table-sm">
+                <thead>
+                  <tr v-if="orders.length === 0">
+                    <td colspan="7" class="text-center fs-4 mt-3 mb-3">
+                      There are currently no orders.
+                    </td>
+                  </tr>
+                  <tr v-else class="table-items">
+                    <th scope="col" class="text-center">ID</th>
+                    <th scope="col" class="text-center">First Name</th>
+                    <th scope="col" class="text-center">Last Name</th>
+                    <th scope="col" class="text-center">Order ID</th>
+                    <th scope="col" class="text-center">Address</th>
+                    <th scope="col" class="text-center">City</th>
+                    <th scope="col" class="text-center">Order date</th>
+                    <th scope="col" class="text-center">To pay</th>
+                    <th score="col" class="text-center">Delete</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr
+                    class="table-items"
+                    v-for="order in orders"
+                    :key="order._id"
+                  >
+                    <th class="text-center text-muted">{{ order._id }}</th>
+                    <td class="text-center text-muted">
+                      {{ order.firstName }}
+                    </td>
+                    <td class="text-center text-muted">{{ order.lastName }}</td>
+                    <td class="text-center text-muted">
+                      {{ order.cartId._id }}
+                    </td>
+                    <td class="text-center text-muted">{{ order.address }}</td>
+                    <td class="text-center text-muted">{{ order.city }}</td>
+                    <td class="text-center text-muted">
+                      {{ formatDate(order.createdAt) }}
+                    </td>
+                    <td class="text-center text-muted">{{ order.total }} €</td>
+                    <td class="text-center">
+                      <i
+                        class="deleteUserIcon bi bi-file-earmark-x text-danger fs-5"
+                        title="Delete order"
+                        @click="deleteOrder(order._id)"
+                      ></i>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>
@@ -679,6 +752,7 @@ export default {
       editBookPrice: "",
       editBookCategory: "",
       editBookImage: null,
+      orders: [],
     };
   },
   methods: {
@@ -990,13 +1064,13 @@ export default {
         setTimeout(() => {
           this.success = false;
         }, 3000);
-         this.bookTitle = "";
-         this.author = "";
-         this.year = "";
-         this.description = "";
-         this.price = "";
-         this.selectedCategory = "";
-         this.imageFile = null;
+        this.bookTitle = "";
+        this.author = "";
+        this.year = "";
+        this.description = "";
+        this.price = "";
+        this.selectedCategory = "";
+        this.imageFile = null;
       } catch (error) {
         this.success = true;
         this.message = error.response.data.message;
@@ -1061,12 +1135,65 @@ export default {
         );
       }
     },
+    async fetchOrders() {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          console.error("Nema tokena, korisnik nije prijavljen");
+          return;
+        }
+
+        const response = await axios.get("http://localhost:3000/api/orders", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        this.orders = response.data;
+        console.log("Ovo su sve narudžbe:", this.orders);
+      } catch (error) {
+        console.error("Greška prilikom dohvaćanja narudžbi:", error);
+      }
+    },
+    async deleteOrder(id) {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          console.error("Nema tokena, korisnik nije prijavljen");
+          return;
+        }
+
+        const confirmDelete = confirm(
+          "Are you sure you want to delete this order?"
+        );
+        if (!confirmDelete) return;
+
+        const response = await axios.delete(
+          `http://localhost:3000/api/orders/${id}`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+
+        // Provjeri odgovor
+        console.log("Response from server:", response);
+
+        // Ažuriraj listu narudžbi nakon brisanja
+        this.orders = this.orders.filter((order) => order._id !== id);
+        console.log("Narudžba uspješno obrisana:", id);
+        this.fetchOrders();
+      } catch (error) {
+        console.error(
+          "Greška prilikom brisanja narudžbe:",
+          error.response || error.message
+        );
+      }
+    },
   },
 
   created() {
     this.fetchUserData();
     this.fetchCategories();
     this.fetchBooks();
+    this.fetchOrders();
   },
 };
 </script>

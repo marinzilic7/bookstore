@@ -54,13 +54,10 @@ export default {
     async fetchBooks() {
       try {
         const token = localStorage.getItem("token");
-        if (!token) {
-          console.error("Nema tokena, korisnik nije prijavljen");
-          return;
-        }
+       
 
         const response = await axios.get("http://localhost:3000/api/books", {
-          headers: { Authorization: `Bearer ${token}` },
+          
         });
 
         this.books = response.data;
