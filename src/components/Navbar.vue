@@ -156,9 +156,11 @@ export default {
     this.fetchUserData();
     this.fetchCart();
     this.$bus.on("cart-updated", this.fetchCart);
+    
   },
   beforeUnmount() {
     this.$bus.off("cart-updated", this.fetchCart);
+   
   },
 };
 </script>

@@ -8,7 +8,10 @@ import Futer from "@/components/Futer.vue";
     <Navbar />
     <div class="content">
       <h1 class="text-center mt-5">Search Results</h1>
-      <div v-if="books.length" class="book-view d-flex flex-wrap gap-5 ms-5 mt-5">
+      <div
+        v-if="books.length"
+        class="book-view d-flex flex-wrap gap-5 ms-5 mt-5"
+      >
         <div
           v-for="book in books"
           :key="book.id"
@@ -45,6 +48,7 @@ import Futer from "@/components/Futer.vue";
 
 <script>
 import axios from "axios";
+import { ref } from "vue";
 
 export default {
   data() {
@@ -60,13 +64,17 @@ export default {
           `http://localhost:3000/api/books/search?title=${title}`
         );
         this.books = response.data;
+        this.$router.replace({ path: this.$route.path, query: { title } });
       } catch (error) {
         console.error("Error fetching search results:", error);
       }
     },
   },
-  created() {
+  mounted() {
     this.searchBooks();
+  },
+  watch: {
+    "$route.query.title": "searchBooks",
   },
 };
 </script>
@@ -83,7 +91,7 @@ export default {
   padding-bottom: 1rem;
 }
 
-.book-view{
-  margin-bottom:15vh;
+.book-view {
+  margin-bottom: 15vh;
 }
 </style>

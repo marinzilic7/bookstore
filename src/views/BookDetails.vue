@@ -9,7 +9,7 @@ import Futer from "@/components/Futer.vue";
   </div>
   <div
       v-if="success"
-      class="alert alert-info position-absolute mt-3 me-3 end-0"
+      class="alert alert-info position-fixed mt-3 me-3 end-0 z-3"
     >
       {{ noti }}
     </div>

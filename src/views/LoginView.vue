@@ -1,7 +1,7 @@
 <template>
   <div class="container-fluid">
     <div class="d-flex justify-content-center align-items-center vh-100">
-      <form class="col-12 col-lg-4 col-md-5 col-sm-5 bg-light shadow-lg p-3" @submit.prevent="loginUser">
+      <form class="col-12 col-lg-5 col-md-5 col-sm-5 bg-light shadow-lg p-3" @submit.prevent="loginUser">
         <h2 class="text-center">Login</h2>
 
         <div class="mb-3">

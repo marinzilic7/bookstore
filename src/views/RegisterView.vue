@@ -3,7 +3,7 @@
     <div class="d-flex justify-content-center align-items-center vh-100">
       <form
         @submit.prevent="registerUser"
-        class="col-12 col-lg-4 col-md-5 col-sm-5 bg-light shadow-lg p-3"
+        class="col-12 col-lg-5 col-md-5 col-sm-5 bg-light shadow-lg p-3"
       >
         <h2 class="text-center">Register</h2>
         <div class="mb-3">
