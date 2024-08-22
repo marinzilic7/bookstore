@@ -2,7 +2,7 @@
   <div>
     <nav class="navbar navbar-expand-lg bg-body-tertiary border-bottom">
       <div class="container-fluid">
-        <a class="navbar-brand" href="#">BookStore</a>
+        <a class="navbar-brand" href="/"><img src="../images/logoo.png" height="80px"  alt="logo" srcset=""></a>
 
         <button
           class="navbar-toggler"
@@ -72,8 +72,9 @@
               <span class="visually-hidden">unread messages</span>
             </span>
           </ul>
-          <form class="d-flex" role="search">
+          <form class="d-flex" role="search"  @submit.prevent="searchBooks">
             <input
+              v-model="searchQuery"
               class="form-control me-2"
               type="search"
               placeholder="Search by title..."
@@ -145,6 +146,9 @@ export default {
       } catch (error) {
         console.error(error);
       }
+    },
+    searchBooks() {
+      this.$router.push({ path: '/search', query: { title: this.searchQuery } });
     },
   },
 

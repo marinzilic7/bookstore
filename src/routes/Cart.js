@@ -37,14 +37,16 @@ router.post("/cart/:bookId", async (req, res) => {
       if (itemIndex > -1) {
         // If the book already exists, increase the quantity
         cart.items[itemIndex].quantity += 1;
+        res.status(200).json({ message: "You have increased the quantity of this book in your order.", cart });
       } else {
         // If the book doesn't exist, add it to the cart
         cart.items.push({ bookId, quantity: 1 });
+        res.status(200).json({ message: "Book added to cart", cart });
       }
     }
 
     await cart.save();
-    res.status(200).json({ message: "Book added to cart", cart });
+    
   } catch (error) {
     console.error("Error adding book to cart:", error);
     res.status(500).json({ message: "Server error", error });

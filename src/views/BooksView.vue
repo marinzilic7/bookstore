@@ -7,7 +7,7 @@ import Futer from "@/components/Futer.vue";
   <div>
     <Navbar />
   </div>
-  <div class="d-flex gap-5 ms-5 mt-5">
+  <div class="book-view d-flex flex-wrap gap-5 ms-5 mt-5">
     <div
       v-for="book in books"
       :key="book._id"
@@ -34,6 +34,7 @@ import Futer from "@/components/Futer.vue";
       </div>
     </div>
   </div>
+  <Futer />
 </template>
 
 <script>
@@ -90,5 +91,9 @@ export default {
 
 .img-fluid:hover {
   transform: translateY(-10px);
+}
+
+.book-view{
+  margin-bottom:15vh;
 }
 </style>

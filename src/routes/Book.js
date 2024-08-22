@@ -16,6 +16,24 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
+
+router.get("/books/search", async (req, res) => {
+  try {
+    const { title } = req.query;
+
+    const books = await Book.find({
+      title: { $regex: title, $options: "i" },
+    });
+
+    res.json(books);
+  } catch (error) {
+    console.error("Greška pri pretrazi knjiga:", error);
+    res.status(500).json({ message: "Greška na serveru prilikom pretrage knjiga" });
+  }
+});
+
+
+
 // Ruta za dodavanje knjige
 router.post("/books", upload.single("image"), async (req, res) => {
   try {
@@ -73,6 +91,8 @@ router.delete("/books/:id", async (req, res) => {
   }
 });
 
+
+
 router.put("/books/:id", upload.single("image"), async (req, res) => {
   try {
     const { title, author, year, description, price, category } = req.body;
@@ -124,7 +144,8 @@ router.get("/books/:id", async (req, res) => {
     console.error("Stack trace:", error.stack);
     res.status(500).json({ message: "Server error" });
   }
-}
-);
+});
+
+
 
 export default router;

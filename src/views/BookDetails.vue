@@ -7,7 +7,12 @@ import Futer from "@/components/Futer.vue";
   <div>
     <Navbar />
   </div>
-
+  <div
+      v-if="success"
+      class="alert alert-info position-absolute mt-3 me-3 end-0"
+    >
+      {{ noti }}
+    </div>
   <div class="main d-flex align-items-end">
     <div
       class="main-content d-flex flex-column align-items-center justify-content-center w-100"
@@ -62,6 +67,8 @@ export default {
   data() {
     return {
       book: {},
+      noti: "",
+      success: false,
     };
   },
   created() {
@@ -95,6 +102,12 @@ export default {
             headers: { Authorization: `Bearer ${token}` },
           }
         );
+        this.success = true;
+        this.noti = response.data.message;
+        setTimeout(() => {
+         this.success = false;
+          
+        }, 2000);
         this.$bus.emit('cart-updated');
         console.log(response.data);
       } catch (error) {

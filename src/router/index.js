@@ -6,6 +6,7 @@ import BooksView from '../views/BooksView.vue'
 import AdminView from '../views/AdminView.vue'
 import BookDetails from "../views/BookDetails.vue";
 import CartView from "../views/CartView.vue";
+import SearchView from "../views/SearchView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -45,6 +46,12 @@ const router = createRouter({
       name: "Cart",
       component: CartView,
     },
+    {
+      path: '/search',
+      name: 'Search',
+      component: SearchView
+    },
+    
   ]
 })
 

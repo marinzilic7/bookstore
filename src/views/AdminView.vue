@@ -990,13 +990,13 @@ export default {
         setTimeout(() => {
           this.success = false;
         }, 3000);
-        this.bookTitle = "";
-        this.author = "";
-        this.year = "";
-        this.description = "";
-        this.price = "";
-        this.selectedCategory = "";
-        this.imageFile = null;
+         this.bookTitle = "";
+         this.author = "";
+         this.year = "";
+         this.description = "";
+         this.price = "";
+         this.selectedCategory = "";
+         this.imageFile = null;
       } catch (error) {
         this.success = true;
         this.message = error.response.data.message;

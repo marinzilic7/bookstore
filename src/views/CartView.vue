@@ -31,15 +31,17 @@ import Futer from "@/components/Futer.vue";
             </div>
             <div class="col-md-8">
               <div class="card-body">
-                <h5 class="card-title">{{ item.bookId.title }}</h5>
+                <h5 class="card-title">Title: {{ item.bookId.title }}</h5>
                 <hr />
-                <p class="card-text">{{ item.bookId.author }}</p>
+                <p class="card-text">Author: {{ item.bookId.author }}</p>
                 <hr />
-                <p class="card-text">{{ item.bookId.category }}</p>
+                <p class="card-text">Year: {{ item.bookId.year }}</p>
+                <hr />
+                <p class="card-text">Quantity: {{ item.quantity }}</p>
                 <hr />
                 <p class="card-text">
                   <small class="text-body-secondary"
-                    >{{ item.bookId.price }}€</small
+                    >Price: {{ this.price }}€</small
                   >
                 </p>
                 <hr />
@@ -69,6 +71,7 @@ export default {
     return {
       carts: [],
       total: 0,
+      price: null,
     };
   },
   created() {
@@ -89,8 +92,14 @@ export default {
         });
         this.carts = response.data;
         console.log("Ovo je kosarica", this.carts);
+
+        //RACUNANJE UKUPNE CIJENE NA OSNOVU KOLICINE
+
+        this.price = this.carts.items.reduce((total, item) => {
+          return total + item.bookId.price * item.quantity;
+        }, 0);
         this.total = this.carts.items.reduce(
-          (acc, item) => acc + item.bookId.price,
+          (acc, item) => acc + this.price,
           0
         );
       } catch (error) {
@@ -112,9 +121,8 @@ export default {
               Authorization: `Bearer ${token}`,
             },
           }
-          
         );
-        this.$bus.emit('cart-updated');
+        this.$bus.emit("cart-updated");
         console.log(response.data);
         this.fetchCart();
       } catch (error) {
