@@ -7,7 +7,7 @@ import Futer from "@/components/Futer.vue";
   <div>
     <Navbar />
   </div>
-  <div class="book-view d-flex flex-wrap gap-5 ms-5 mt-5">
+  <div v-if="books.length > 0" class="book-view d-flex flex-wrap gap-5 ms-5 mt-5">
     <div
       v-for="book in books"
       :key="book._id"
@@ -34,6 +34,11 @@ import Futer from "@/components/Futer.vue";
       </div>
     </div>
   </div>
+  <div v-else>
+    <h3 class="text-center mt-5">There is no currently books here.</h3>
+  </div>
+  <Futer v-if="!books.length"  class="position-fixed bottom-0 w-100"/>
+  <Futer v-else /> 
   <Futer />
 </template>
 
