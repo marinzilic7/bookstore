@@ -6,7 +6,7 @@ import jwt from "jsonwebtoken";
 
 const router = express.Router();
 
-// Middleware za provjeru JWT tokena
+
 const authenticateToken = (req, res, next) => {
   const token = req.headers["authorization"]?.split(" ")[1];
   if (token == null) return res.sendStatus(401);
@@ -18,7 +18,7 @@ const authenticateToken = (req, res, next) => {
   });
 };
 
-// Endpoint za dohvat podataka korisnika
+
 router.get("/user", authenticateToken, async (req, res) => {
   try {
     const user = await User.findById(req.user.id);
@@ -30,12 +30,12 @@ router.get("/user", authenticateToken, async (req, res) => {
   }
 });
 
-// API endpoint za registraciju korisnika
+
 router.post("/register", async (req, res) => {
   try {
     const { name, surname, email, password, role, dateRegistered } = req.body;
 
-    // Provjeri postoji li već korisnik s istim emailom
+  
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res
@@ -43,17 +43,17 @@ router.post("/register", async (req, res) => {
         .json({ message: "A user with this email already exists" });
     }
 
-    // Jel lozinka duza od 6 karaktera
+    
     if (password.length < 6) {
       return res
         .status(400)
         .json({ message: "Password must contain at least 6 characters" });
     }
 
-    // Hashiraj lozinku prije spremanja
+   
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Kreiraj novog korisnika
+   
     const newUser = new User({
       name,
       surname,
@@ -63,7 +63,7 @@ router.post("/register", async (req, res) => {
       dateRegistered,
     });
 
-    // Spremi korisnika u bazu podataka
+    
     await newUser.save();
 
     res.status(201).json({ message: "Registraion successfull" });
@@ -77,7 +77,7 @@ router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // Provjeri postoji li korisnik s navedenim emailom
+   
     const user = await User.findOne({ email });
     if (!user) {
       return res
@@ -85,7 +85,7 @@ router.post("/login", async (req, res) => {
         .json({ message: "Invalid email address or password" });
     }
 
-    // Provjeri ispravnost lozinke
+   
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res
@@ -93,7 +93,7 @@ router.post("/login", async (req, res) => {
         .json({ message: "Invalid email address or password" });
     }
 
-    // Generiraj JWT token
+    
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
       expiresIn: "1h",
     });
@@ -107,7 +107,7 @@ router.post("/login", async (req, res) => {
 
 router.get("/users", async (req, res) => {
   try {
-    const users = await User.find({}, "name surname email role dateRegistered"); // Only selecting relevant fields
+    const users = await User.find({}, "name surname email role dateRegistered"); 
     res.json(users);
   } catch (error) {
     res.status(500).json({ message: "Server error" });

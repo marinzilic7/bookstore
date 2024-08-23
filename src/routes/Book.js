@@ -4,10 +4,10 @@ import express from "express";
 
 const router = express.Router();
 
-// Konfiguracija za pohranu slike
+
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "./src/uploads"); // Direktorij u kojem će se slike pohranjivati
+    cb(null, "./src/uploads"); 
   },
   filename: function (req, file, cb) {
     cb(null, `${Date.now()}-${file.originalname}`);
@@ -34,14 +34,14 @@ router.get("/books/search", async (req, res) => {
 
 
 
-// Ruta za dodavanje knjige
+
 router.post("/books", upload.single("image"), async (req, res) => {
   try {
     const { title, author, year, description, price, category, addedBy } =
       req.body;
     const image = req.file ? req.file.filename : null;
 
-    // Spremi knjigu u bazu podataka
+ 
     const newBook = new Book({
       title,
       author,
@@ -65,7 +65,7 @@ router.get("/books", async (req, res) => {
   try {
     const books = await Book.find({})
       .populate("addedBy", "name surname")
-      .populate("category", "name") // Populiraj kategoriju // 'name' i 'surname' su polja u modelu User
+      .populate("category", "name") 
       .select(
         "title author year description price category image addedBy createdAt updatedAt"
       );
@@ -98,7 +98,7 @@ router.put("/books/:id", upload.single("image"), async (req, res) => {
     const { title, author, year, description, price, category } = req.body;
     const image = req.file ? req.file.filename : null;
 
-    // Ažuriraj knjigu u bazi podataka
+    
     const updatedBook = await Book.findByIdAndUpdate(
       req.params.id,
       {
@@ -108,10 +108,10 @@ router.put("/books/:id", upload.single("image"), async (req, res) => {
         description,
         price,
         category,
-        image: image ? image : undefined, // Ako nije priložena nova slika, ne ažuriraj image polje
+        image: image ? image : undefined, 
         updatedAt: Date.now(),
       },
-      { new: true } // Vraća ažurirani dokument
+      { new: true } 
     );
 
     if (!updatedBook) {
@@ -131,7 +131,7 @@ router.get("/books/:id", async (req, res) => {
   try {
     const book = await Book.findById(req.params.id)
       .populate("addedBy", "name surname")
-      .populate("category", "name") // Populiraj kategoriju
+      .populate("category", "name") 
       .select(
         "title author year description price category image addedBy createdAt updatedAt"
       );

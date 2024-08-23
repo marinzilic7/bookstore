@@ -16,7 +16,7 @@ router.post("/categories", async (req, res) => {
     }
     const newCategory = new Category({
       name,
-      createdBy: userId, // Save the user ID who created the category
+      createdBy: userId,
     });
 
     await newCategory.save();
@@ -29,7 +29,7 @@ router.post("/categories", async (req, res) => {
 router.get("/categories", async (req, res) => {
   try {
     const categories = await Category.find({})
-      .populate("createdBy", "name surname") // 'name' i 'surname' su polja u modelu User
+      .populate("createdBy", "name surname") 
       .select("name createdBy createdAt updatedAt");
     res.json(categories);
   } catch (error) {
@@ -58,11 +58,11 @@ router.put("/categories/:id", async (req, res) => {
  
 
   try {
-    // Pronađi kategoriju po ID-u i ažuriraj naziv
+
     const updatedCategory = await Category.findByIdAndUpdate(
       id,
       { name },
-      { new: true } // Vraća ažurirani dokument
+      { new: true } 
     );
 
     if (!updatedCategory) {

@@ -789,7 +789,7 @@ export default {
       }
     },
     formatDate(date) {
-      return format(new Date(date), "dd.MM.yyyy. HH:mm:ss"); // Primjer formata datuma i vremena
+      return format(new Date(date), "dd.MM.yyyy. HH:mm:ss"); 
     },
     async deleteUser(id) {
       try {
@@ -811,10 +811,10 @@ export default {
           }
         );
 
-        // Provjeri odgovor
+       
         console.log("Response from server:", response);
 
-        // Ažuriraj listu korisnika nakon brisanja
+        
         this.users = this.users.filter((user) => user._id !== id);
         console.log("Korisnik uspješno obrisan:", id);
       } catch (error) {
@@ -836,7 +836,7 @@ export default {
           "http://localhost:3000/api/categories",
           {
             name: this.newCategoryName,
-            userId: this.user._id, // Send user ID who adds the category
+            userId: this.user._id, 
           },
           {
             headers: { Authorization: `Bearer ${token}` },
@@ -927,7 +927,7 @@ export default {
       this.editBookYear = book.year;
       this.editBookDescription = book.description;
       this.editBookPrice = book.price;
-      this.editBookCategory = book.category._id; // Adjust if necessary
+      this.editBookCategory = book.category._id;
       const modal = new bootstrap.Modal(
         document.getElementById("editBookModal")
       );
@@ -998,14 +998,14 @@ export default {
           this.success = false;
         }, 3000);
 
-        // Ažuriraj lokalnu listu kategorija
+       
         this.categories = this.categories.map((category) =>
           category._id === this.editCategoryId
             ? { ...category, name: this.editCategoryName }
             : category
         );
 
-        // Sakrij modal
+     
         const modal = bootstrap.Modal.getInstance(
           document.getElementById("editCategoryModal")
         );
@@ -1121,10 +1121,9 @@ export default {
           }
         );
 
-        // Provjeri odgovor
+       
         console.log("Response from server:", response);
 
-        // Ažuriraj listu knjiga nakon brisanja
         this.books = this.books.filter((book) => book._id !== id);
         console.log("Knjiga uspješno obrisana:", id);
         this.fetchBooks();
@@ -1173,10 +1172,10 @@ export default {
           }
         );
 
-        // Provjeri odgovor
+      
         console.log("Response from server:", response);
 
-        // Ažuriraj listu narudžbi nakon brisanja
+       
         this.orders = this.orders.filter((order) => order._id !== id);
         console.log("Narudžba uspješno obrisana:", id);
         this.fetchOrders();

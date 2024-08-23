@@ -24,15 +24,15 @@ const bookSchema = new mongoose.Schema(
     },
     category: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Category", // Assuming you have a Category model
+      ref: "Category", 
       required: true,
     },
     image: {
-      type: String, // This will store the filename of the uploaded image
+      type: String, 
     },
     addedBy: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User", // Assuming you have a User model
+      ref: "User", 
       required: true,
     },
   },

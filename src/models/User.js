@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-// Definicija sheme za korisnika
+
 const userSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -13,7 +13,7 @@ const userSchema = new mongoose.Schema({
     email: {
         type: String,
         required: true,
-        unique: true // Email mora biti jedinstven
+        unique: true 
     },
     password: {
         type: String,
@@ -29,7 +29,7 @@ const userSchema = new mongoose.Schema({
     }
 });
 
-// Kreiranje modela na osnovu sheme
+
 const User = mongoose.model('User', userSchema);
 
 export default User;
